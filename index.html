@@ -843,10 +843,10 @@
   /* ---------- Lead capture: guide by email, then top 3 priorities (HubSpot) ---------- */
   // Fill these in from HubSpot (Marketing > Forms). Until they are set, the guide is simply offered as a download.
   var HUBSPOT = {
-    portalId: "PORTAL_ID",
-    guideFormId: "GUIDE_FORM_ID",
-    contactFormId: "CONTACT_FORM_ID",
-    prioritiesFormId: "PRIORITIES_FORM_ID"
+    portalId: "343720225",
+    guideFormId: "0adcadd4-f78c-4306-9c60-3d472226e5cf",
+    contactFormId: "a984268e-7dd4-45bd-b16d-352fe84b1286",
+    prioritiesFormId: "a984268e-7dd4-45bd-b16d-352fe84b1286"
   };
   var GUIDE_URL = "ops-dna-priorities-guide.pdf";
   var PRIORITIES = [
@@ -871,8 +871,8 @@
   }
   function leadCapture(typeName) {
     var card = el("div", "lc");
-    card.appendChild(el("p", "lc-title", "Get your result and the Ops Priorities Guide by email"));
-    card.appendChild(el("p", "lc-sub", "A two-page checklist to spot what's eating your time and choose your top three fixes."));
+    card.appendChild(el("p", "lc-title", "Get your free Ops Priorities Guide"));
+    card.appendChild(el("p", "lc-sub", "A two-page checklist to spot what's eating your time and choose your top three fixes. Enter your name and email to download it."));
     var f = document.createElement("form"); f.className = "lc-form"; f.noValidate = false;
     var row = el("div", "lc-row");
     row.appendChild(field("First name", "text", "firstname", "given-name"));
@@ -881,7 +881,7 @@
     var c = el("label", "lc-check"); var cb = document.createElement("input"); cb.type = "checkbox"; cb.name = "ops_tips_opt_in";
     c.appendChild(cb); c.appendChild(el("span", null, "Also send me occasional ops tips from OPS DNA. Unsubscribe anytime."));
     f.appendChild(c);
-    var b = el("button", "btn", "Send me the guide"); b.type = "submit"; f.appendChild(b);
+    var b = el("button", "btn", "Get the guide"); b.type = "submit"; f.appendChild(b);
     var msg = el("p", "lc-msg"); msg.setAttribute("role", "status"); f.appendChild(msg);
     f.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -891,7 +891,7 @@
       sendToHubSpot(HUBSPOT.guideFormId, data).then(function () {
         renderPriorities(card, data);
       }).catch(function () {
-        b.disabled = false; b.textContent = "Send me the guide";
+        b.disabled = false; b.textContent = "Get the guide";
         msg.innerHTML = "";
         msg.appendChild(document.createTextNode("Something went wrong. You can "));
         var d = el("a", "link", "download the guide here"); d.href = GUIDE_URL; d.target = "_blank"; d.rel = "noopener"; msg.appendChild(d);
@@ -904,7 +904,7 @@
   function renderPriorities(card, person) {
     card.innerHTML = "";
     var wrap = el("div", "step-in");
-    wrap.appendChild(el("p", "lc-title", hubspotReady() ? "Done! The guide is on its way to your inbox." : "Here's your guide."));
+    wrap.appendChild(el("p", "lc-title", "Here's your guide."));
     var dl = el("a", "link", "Download the Ops Priorities Guide (PDF)"); dl.href = GUIDE_URL; dl.target = "_blank"; dl.rel = "noopener";
     var p = el("p", "lc-sub"); p.appendChild(dl); wrap.appendChild(p);
     wrap.appendChild(el("p", "lc-step", "One more step, optional"));
@@ -932,7 +932,7 @@
       e.preventDefault();
       var chosen = boxes.filter(function (x) { return x.checked; }).map(function (x) { return x.value; });
       send.disabled = true; send.textContent = "Sending…";
-      sendToHubSpot(HUBSPOT.prioritiesFormId, { email: person.email, ops_dna_type: person.ops_dna_type, handoff_priorities: chosen.join("; ") })
+      sendToHubSpot(HUBSPOT.prioritiesFormId, { email: person.email, handoff_priorities: chosen.join("; ") })
         .catch(function () {}).then(function () { renderThanks(card, chosen); });
     });
     wrap.appendChild(f);
